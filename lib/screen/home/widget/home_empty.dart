@@ -5,7 +5,7 @@ class HomeEmpty extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Text('Brak meteogramu'),
+        const Text('Brak meteogramu'),
         RaisedButton(
           child: Text('Wybierz miasto'),
           onPressed: () => Navigator.pushNamed(context, '/find'),

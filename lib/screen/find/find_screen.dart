@@ -12,29 +12,57 @@ class FindScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Wybierz miejscowość')),
       body: Padding(
         padding: EdgeInsets.all(8.0),
-        child: RaisedButton(
-          child: Text('Add'),
-          onPressed: () {
-            final model = Weather(
-              id: 82,
-              city: City(
-                name: 'Wałbrzych',
-                voivodeship: 'Dolnośląskie',
-                geohash: 'u358fscy5',
-                latitude: 50.784,
-                longitude: 16.2843,
-              ),
-              position: Weather.POSITION_NONE,
-              graphs: {
-                Weather.MODEL_UM:
-                    'http://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=444&col=164&lang=pl',
-                Weather.MODEL_COAMPS:
-                    'http://www.meteo.pl/metco/mgram_pict.php?ntype=2n&row=145&col=71&lang=pl'
-              },
-            );
+        child: Column(
+          children: <Widget>[
+            RaisedButton(
+              child: Text('Add'),
+              onPressed: () {
+                final model = Weather(
+                  id: 82,
+                  city: City(
+                    name: 'Wałbrzych',
+                    voivodeship: 'Dolnośląskie',
+                    geohash: 'u358fscy5',
+                    latitude: 50.784,
+                    longitude: 16.2843,
+                  ),
+                  position: Weather.POSITION_NONE,
+                  graphs: {
+                    Weather.MODEL_UM:
+                        'http://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=444&col=164&lang=pl',
+                    Weather.MODEL_COAMPS:
+                        'http://www.meteo.pl/metco/mgram_pict.php?ntype=2n&row=145&col=71&lang=pl'
+                  },
+                );
 
-            BlocProvider.of<WeathersBloc>(context).add(AddWeather(model));
-          },
+                BlocProvider.of<WeathersBloc>(context).add(AddWeather(model));
+              },
+            ),
+            RaisedButton(
+              child: Text('Add 2'),
+              onPressed: () {
+                final model = Weather(
+                  id: 1,
+                  city: City(
+                    name: 'Gdańsk',
+                    voivodeship: 'Pomorskie',
+                    geohash: 'u358fscy5',
+                    latitude: 50.784,
+                    longitude: 16.2843,
+                  ),
+                  position: Weather.POSITION_NONE,
+                  graphs: {
+                    Weather.MODEL_UM:
+                    'http://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=444&col=164&lang=pl',
+                    Weather.MODEL_COAMPS:
+                    'http://www.meteo.pl/metco/mgram_pict.php?ntype=2n&row=145&col=71&lang=pl'
+                  },
+                );
+
+                BlocProvider.of<WeathersBloc>(context).add(AddWeather(model));
+              },
+            ),
+          ],
         ),
       ),
     );
