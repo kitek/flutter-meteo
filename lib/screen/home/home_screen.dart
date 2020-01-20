@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo/model/weather.dart';
+import 'package:meteo/screen/app_routes.dart';
 import 'package:meteo/screen/home/widget/home_empty.dart';
 import 'package:meteo/screen/home/widget/home_graph.dart';
 import 'package:meteo/screen/weathers/bloc/weathers_bloc.dart';
 import 'package:meteo/screen/weathers/bloc/weathers_state.dart';
 
-enum _AppBarAction { myCities, comment, legend }
+enum _AppBarAction { myWeathers, comment, legend }
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -56,21 +57,21 @@ class HomeScreen extends StatelessWidget {
       PopupMenuButton<_AppBarAction>(
         onSelected: (_AppBarAction action) {
           switch (action) {
-            case _AppBarAction.myCities:
-              Navigator.pushNamed(context, '/weathers');
+            case _AppBarAction.myWeathers:
+              Navigator.pushNamed(context, AppRoutes.WEATHERS);
               break;
             case _AppBarAction.comment:
-              Navigator.pushNamed(context, '/comment');
+              Navigator.pushNamed(context, AppRoutes.COMMENT);
               break;
             case _AppBarAction.legend:
-              Navigator.pushNamed(context, '/legend');
+              Navigator.pushNamed(context, AppRoutes.LEGEND);
               break;
           }
         },
         itemBuilder: (BuildContext context) {
           return [
             const PopupMenuItem(
-              value: _AppBarAction.myCities,
+              value: _AppBarAction.myWeathers,
               child: Text('Moje miasta'),
             ),
             const PopupMenuItem(

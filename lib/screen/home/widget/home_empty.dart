@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo/screen/app_routes.dart';
 
 class HomeEmpty extends StatelessWidget {
   @override
@@ -8,7 +9,7 @@ class HomeEmpty extends StatelessWidget {
         const Text('Brak meteogramu'),
         RaisedButton(
           child: Text('Wybierz miasto'),
-          onPressed: () => Navigator.pushNamed(context, '/find'),
+          onPressed: () => Navigator.pushNamed(context, AppRoutes.FIND),
         ),
       ],
     );

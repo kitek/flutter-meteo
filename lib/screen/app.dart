@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:meteo/repository/weather_repository.dart';
+import 'package:meteo/screen/app_routes.dart';
 import 'package:meteo/screen/find/find_screen.dart';
 import 'package:meteo/screen/home/home_screen.dart';
+import 'package:meteo/screen/legend/legend_screen.dart';
 import 'package:meteo/screen/weathers/weathers_screen.dart';
 
 class App extends StatelessWidget {
@@ -15,9 +17,10 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Meteo',
       routes: {
-        '/': (_) => HomeScreen(),
-        '/weathers': (_) => WeathersScreen(),
-        '/find': (_) => FindScreen(),
+        AppRoutes.HOME: (_) => HomeScreen(),
+        AppRoutes.WEATHERS: (_) => WeathersScreen(),
+        AppRoutes.FIND: (_) => FindScreen(),
+        AppRoutes.LEGEND: (_) => LegendScreen(),
       },
       initialRoute: '/',
     );
