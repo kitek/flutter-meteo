@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meteo/repository/weather_repository.dart';
 import 'package:meteo/screen/app_routes.dart';
+import 'package:meteo/screen/comment/comment_screen.dart';
 import 'package:meteo/screen/find/find_screen.dart';
 import 'package:meteo/screen/home/home_screen.dart';
 import 'package:meteo/screen/legend/legend_screen.dart';
@@ -21,6 +22,7 @@ class App extends StatelessWidget {
         AppRoutes.WEATHERS: (_) => WeathersScreen(),
         AppRoutes.FIND: (_) => FindScreen(),
         AppRoutes.LEGEND: (_) => LegendScreen(),
+        AppRoutes.COMMENT: (_) => CommentScreen(repository: repository),
       },
       initialRoute: '/',
     );
