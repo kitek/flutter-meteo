@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meteo/common/meteo_localizations.dart';
 import 'package:meteo/screen/app_routes.dart';
 import 'package:meteo/screen/weathers/bloc/weathers_bloc.dart';
 import 'package:meteo/screen/weathers/bloc/weathers_state.dart';
@@ -11,7 +12,7 @@ class WeathersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Moje miasta')),
+      appBar: AppBar(title: Text(MeteoLocalizations.of(context).myCities)),
       body: BlocBuilder<WeathersBloc, WeathersState>(
         builder: (context, state) {
           if (state is WeathersLoading) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meteo/common/meteo_localizations.dart';
 import 'package:meteo/model/weather.dart';
 import 'package:meteo/screen/app_routes.dart';
 import 'package:meteo/screen/home/widget/home_empty.dart';
@@ -36,7 +37,10 @@ class HomeScreen extends StatelessWidget {
 
   AppBar _buildAppBar(BuildContext context, List<Weather> models) {
     final bool optionsEnabled = models.isNotEmpty;
-    final String title = models.length == 1 ? models.first.city.name : 'Meteo';
+    final String title = models.length == 1
+        ? models.first.city.name
+        : MeteoLocalizations.of(context).appName;
+
     return AppBar(
       title: Text(title),
       actions: _buildActions(context, optionsEnabled),
@@ -70,17 +74,17 @@ class HomeScreen extends StatelessWidget {
         },
         itemBuilder: (BuildContext context) {
           return [
-            const PopupMenuItem(
+            PopupMenuItem(
               value: _AppBarAction.myWeathers,
-              child: Text('Moje miasta'),
+              child: Text(MeteoLocalizations.of(context).myCities),
             ),
-            const PopupMenuItem(
+            PopupMenuItem(
               value: _AppBarAction.comment,
-              child: Text('Komentarz synoptyka'),
+              child: Text(MeteoLocalizations.of(context).comment),
             ),
-            const PopupMenuItem(
+            PopupMenuItem(
               value: _AppBarAction.legend,
-              child: Text('Legenda'),
+              child: Text(MeteoLocalizations.of(context).legend),
             ),
           ];
         },

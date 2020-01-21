@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:meteo/common/meteo_localizations.dart';
 import 'package:meteo/repository/weather_repository.dart';
 import 'package:meteo/screen/app_routes.dart';
 import 'package:meteo/screen/find/find_screen.dart';
@@ -14,6 +16,15 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: [
+        const MeteoLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', ''),
+        const Locale('pl', ''),
+      ],
       debugShowCheckedModeBanner: false,
       title: 'Meteo',
       routes: {
@@ -22,7 +33,7 @@ class App extends StatelessWidget {
         AppRoutes.FIND: (_) => FindScreen(),
         AppRoutes.LEGEND: (_) => LegendScreen(),
       },
-      initialRoute: '/',
+      initialRoute: AppRoutes.HOME,
     );
   }
 }

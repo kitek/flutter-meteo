@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo/common/meteo_localizations.dart';
 import 'package:photo_view/photo_view.dart';
 
 class LegendScreen extends StatelessWidget {
@@ -7,7 +8,7 @@ class LegendScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Legenda')),
+      appBar: AppBar(title: Text(MeteoLocalizations.of(context).legend)),
       body: Align(
         child: PhotoView(
           imageProvider: NetworkImage(_url),
