@@ -21,7 +21,6 @@ class WeatherRepository {
     }
 
     await _dao.save(model);
-    print('Model saved...');
 
     return model;
   }
@@ -34,6 +33,7 @@ class WeatherRepository {
     return _dao.remove(model);
   }
 
-// move()
-
+  Future<String> getComment(DateTime dateTime) {
+    return _apiClient.getWeatherComment(dateTime);
+  }
 }

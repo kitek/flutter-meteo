@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:meteo/common/meteo_localizations.dart';
 import 'package:meteo/repository/weather_repository.dart';
 import 'package:meteo/screen/app_routes.dart';
+import 'package:meteo/screen/comment/comment_screen.dart';
 import 'package:meteo/screen/find/find_screen.dart';
 import 'package:meteo/screen/home/home_screen.dart';
 import 'package:meteo/screen/legend/legend_screen.dart';
@@ -32,6 +33,7 @@ class App extends StatelessWidget {
         AppRoutes.WEATHERS: (_) => WeathersScreen(),
         AppRoutes.FIND: (_) => FindScreen(),
         AppRoutes.LEGEND: (_) => LegendScreen(),
+        AppRoutes.COMMENT: (_) => CommentScreen(repository: repository),
       },
       initialRoute: AppRoutes.HOME,
     );
