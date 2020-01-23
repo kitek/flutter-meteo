@@ -6,6 +6,7 @@ import 'package:meteo/screen/comment/bloc/comment_state.dart';
 
 class CommentBloc extends Bloc<CommentEvent, CommentState> {
   final WeatherRepository repository;
+  final DateTime firstDate = DateTime(2018);
 
   CommentBloc({@required this.repository});
 
@@ -13,10 +14,11 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
   CommentState get initialState => CommentLoading();
 
   DateTime get dateTime {
+    final now = DateTime.now();
     if (state is CommentLoaded) {
-      return (state as CommentLoaded).dateTime;
+      return (state as CommentLoaded)?.dateTime ?? now;
     }
-    return DateTime.now();
+    return now;
   }
 
   @override

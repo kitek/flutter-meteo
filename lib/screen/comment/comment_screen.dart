@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meteo/common/meteo_localizations.dart';
 import 'package:meteo/repository/weather_repository.dart';
 import 'package:meteo/screen/comment/bloc/comment_bloc.dart';
 import 'package:meteo/screen/comment/bloc/comment_event.dart';
@@ -19,13 +20,13 @@ class CommentScreen extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Komentarz synoptyka'),
+          title: Text(MeteoLocalizations.of(context).comment),
           actions: _buildActions(),
         ),
         body: BlocBuilder<CommentBloc, CommentState>(
           builder: (BuildContext context, CommentState state) {
             if (state is CommentLoading) {
-              return Align(child: CircularProgressIndicator());
+              return const Align(child: CircularProgressIndicator());
             } else if (state is CommentLoaded) {
               return SingleChildScrollView(
                 child: Padding(
@@ -36,11 +37,10 @@ class CommentScreen extends StatelessWidget {
                   ),
                 ),
               );
-            } else if (state is CommentNotLoaded) {
-              return Align(child: Text('Error'));
+            } else {
+              return Align(
+                  child: Text(MeteoLocalizations.of(context).errorOccurred));
             }
-
-            return Text('Ka boom');
           },
         ),
       ),
@@ -55,10 +55,11 @@ class CommentScreen extends StatelessWidget {
           onPressed: () async {
             final DateTime dateTime = await showDatePicker(
               context: context,
-              firstDate: DateTime(2018),
+              firstDate: BlocProvider.of<CommentBloc>(context).firstDate,
               lastDate: DateTime.now(),
               initialDate: BlocProvider.of<CommentBloc>(context).dateTime,
             );
+            if (null == dateTime) return;
 
             final loadEvent = LoadComment(dateTime: dateTime);
             BlocProvider.of<CommentBloc>(context).add(loadEvent);

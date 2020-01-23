@@ -10,7 +10,6 @@ import 'package:meteo/model/weather.dart';
 class WeatherApiClient {
   static const _authority = 'meteo-app.firebaseio.com';
   final http.Client httpClient;
-  final _format = DateFormat('yyyy-MM-dd');
 
   WeatherApiClient({@required this.httpClient}) : assert(httpClient != null);
 
@@ -55,7 +54,8 @@ class WeatherApiClient {
   }
 
   Future<String> getWeatherComment(DateTime dateTime) async {
-    final day = _format.format(dateTime);
+    final day = DateFormat('yyyy-MM-dd').format(dateTime);
+
     final uri = Uri.https(
       _authority,
       '/comments_pl/$day.json',

@@ -19,6 +19,7 @@ class MeteoLocalizations {
       'choose_city': 'Choose city',
       'cities_empty': 'The list is empty. Add new city.',
       'no_graph': 'No forecast graph',
+      'error_occurred': 'Error occurred :(',
     },
     'pl': {
       'app_name': 'Meteo',
@@ -28,6 +29,7 @@ class MeteoLocalizations {
       'choose_city': 'Wybierz miasto',
       'cities_empty': 'Pusto. Dodaj nowe miasto.',
       'no_graph': 'Brak meteorogramu',
+      'error_occurred': 'Wystąpił błąd :(',
     },
   };
 
@@ -45,6 +47,9 @@ class MeteoLocalizations {
 
   String get citiesEmpty =>
       _localizedValues[locale.languageCode]['cities_empty'];
+
+  String get errorOccurred =>
+      _localizedValues[locale.languageCode]['error_occurred'];
 }
 
 class MeteoLocalizationsDelegate
