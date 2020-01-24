@@ -7,17 +7,12 @@ import 'package:meteo/screen/comment/bloc/comment_event.dart';
 import 'package:meteo/screen/comment/bloc/comment_state.dart';
 
 class CommentScreen extends StatelessWidget {
-  final WeatherRepository repository;
-
-  const CommentScreen({Key key, @required this.repository}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider<CommentBloc>(
-      create: (_) {
-        return CommentBloc(repository: repository)
-          ..add(LoadComment(dateTime: DateTime.now()));
-      },
+      create: (context) => CommentBloc(
+          repository: RepositoryProvider.of<WeatherRepository>(context))
+        ..add(LoadComment(dateTime: DateTime.now())),
       child: Scaffold(
         appBar: AppBar(
           title: Text(MeteoLocalizations.of(context).comment),

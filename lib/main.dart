@@ -7,18 +7,17 @@ import 'package:meteo/repository/datasource/weather_api_client.dart';
 import 'package:meteo/repository/datasource/weather_dao.dart';
 import 'package:meteo/repository/weather_repository.dart';
 import 'package:meteo/screen/app.dart';
-import 'package:meteo/screen/weathers/bloc/weathers_bloc.dart';
-import 'package:meteo/screen/weathers/bloc/weathers_event.dart';
 
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
-  final repository = WeatherRepository(
-    WeatherDao(),
-    WeatherApiClient(httpClient: http.Client()),
-  );
 
-  runApp(BlocProvider<WeathersBloc>(
-    create: (_) => WeathersBloc(repository: repository)..add(LoadWeathers()),
-    child: App(repository: repository),
-  ));
+  return runApp(
+    RepositoryProvider(
+      create: (_) => WeatherRepository(
+        WeatherDao(),
+        WeatherApiClient(httpClient: http.Client()),
+      ),
+      child: App(),
+    ),
+  );
 }

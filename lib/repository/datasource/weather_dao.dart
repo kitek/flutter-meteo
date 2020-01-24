@@ -21,11 +21,13 @@ class WeatherDao {
   Future<List<Weather>> list() async {
     final db = await DbProvider.db.database;
     final rows = await db.query(_TABLE_NAME, orderBy: 'position DESC');
+
     return rows.map((row) => Weather.fromMap(row)).toList();
   }
 
   Future<void> save(Weather model) async {
     final db = await DbProvider.db.database;
+
     return await db.insert(
       _TABLE_NAME,
       model.toMap(),
@@ -35,6 +37,7 @@ class WeatherDao {
 
   Future<void> remove(Weather model) async {
     final db = await DbProvider.db.database;
+
     return await db.delete(
       _TABLE_NAME,
       where: 'id = ?',

@@ -1,4 +1,6 @@
-class City {
+import 'package:equatable/equatable.dart';
+
+class City extends Equatable {
   final String name;
   final String voivodeship;
   final String geohash;
@@ -31,4 +33,7 @@ class City {
 
   @override
   String toString() => 'City { name: $name, voivodeship: $voivodeship }';
+
+  @override
+  List<Object> get props => [name, voivodeship, geohash, latitude, longitude];
 }

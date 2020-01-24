@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:meteo/model/city.dart';
 
-class Weather {
+class Weather extends Equatable {
   final int id;
   final City city;
   final Map<String, String> graphs;
@@ -53,4 +54,7 @@ class Weather {
   @override
   String toString() =>
       'Weather { id: $id, name: $city, position: $position, models: $graphs }';
+
+  @override
+  List<Object> get props => [id, city, graphs, position];
 }
