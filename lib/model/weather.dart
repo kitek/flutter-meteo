@@ -8,8 +8,8 @@ class Weather extends Equatable {
   final int position;
 
   static const int POSITION_NONE = -1;
-  static const String MODEL_UM = 'umUrl';
-  static const String MODEL_COAMPS = 'coampsUrl';
+  static const String MODEL_UM = 'um';
+  static const String MODEL_COAMPS = 'coamps';
 
   const Weather({
     this.id,
@@ -53,7 +53,7 @@ class Weather extends Equatable {
 
   @override
   String toString() =>
-      'Weather { id: $id, name: $city, position: $position, models: $graphs }';
+      'Weather { id: $id, name: $city, position: $position, graphs: $graphs }';
 
   @override
   List<Object> get props => [id, city, graphs, position];

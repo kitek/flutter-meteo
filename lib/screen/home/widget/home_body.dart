@@ -14,6 +14,9 @@ class HomeBody extends StatelessWidget {
       listener: (context, state) {
         if (state is HomeLoaded) _showSnackBar(context);
       },
+      condition: (previous, current) {
+        return current is HomeLoaded && current.showSnackBar;
+      },
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (_, state) => _buildBodyChild(state),
       ),

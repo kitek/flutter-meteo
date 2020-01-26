@@ -16,11 +16,13 @@ class MeteoLocalizations {
       'my_cities': 'My cities',
       'comment': 'Forecaster comment',
       'legend': 'Legend',
-      'choose_city': 'Choose city',
-      'cities_empty': 'The list is empty. Add new city.',
+      'choose_city': 'Choose a city',
+      'cities_empty': 'The list is empty. Add a new city.',
       'no_graph': 'No forecast graph',
       'error_occurred': 'Error occurred :(',
       'refreshed': 'Refreshed',
+      'enter_city_name': 'Type city name',
+      'city_not_found': 'City not found. Please type another name.',
     },
     'pl': {
       'app_name': 'Meteo',
@@ -32,6 +34,34 @@ class MeteoLocalizations {
       'no_graph': 'Brak meteorogramu',
       'error_occurred': 'Wystąpił błąd :(',
       'refreshed': 'Zaktualizowano',
+      'enter_city_name': 'Podaj nazwę miasta',
+      'city_not_found': 'Miasto nieznalezione. Wpisz inną nazwę.',
+    },
+    'sv': {
+      'app_name': 'Meteo',
+      'my_cities': 'Mina städer',
+      'comment': 'Prognos kommentar',
+      'legend': 'Legend',
+      'choose_city': 'Välj stad',
+      'cities_empty': 'Listan är tom. Lägg till en ny stad.',
+      'no_graph': 'Ingen prognosgraf',
+      'error_occurred': 'Fel inträffade :(',
+      'refreshed': 'Uppdateras',
+      'enter_city_name': 'Ange stadens namn',
+      'city_not_found': 'Staden hittades inte. Skriv ett annat namn.',
+    },
+    'nb': {
+      'app_name': 'Meteo',
+      'my_cities': 'Byene mine',
+      'comment': 'Prognosekommentar',
+      'legend': 'Legende',
+      'choose_city': 'Velg en by',
+      'cities_empty': 'Listen er tom. Legg til en ny by.',
+      'no_graph': 'Ingen prognosegraf',
+      'error_occurred': 'Feil oppstod :(',
+      'refreshed': 'Oppdateres',
+      'enter_city_name': 'Oppgi bynavn',
+      'city_not_found': 'By ikke funnet. Skriv inn et annet navn.',
     },
   };
 
@@ -54,6 +84,12 @@ class MeteoLocalizations {
       _localizedValues[locale.languageCode]['error_occurred'];
 
   String get refreshed => _localizedValues[locale.languageCode]['refreshed'];
+
+  String get enterCityName =>
+      _localizedValues[locale.languageCode]['enter_city_name'];
+
+  String get cityNotFound =>
+      _localizedValues[locale.languageCode]['city_not_found'];
 }
 
 class MeteoLocalizationsDelegate
@@ -61,7 +97,9 @@ class MeteoLocalizationsDelegate
   const MeteoLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) => ['en', 'pl'].contains(locale.languageCode);
+  bool isSupported(Locale locale) {
+    return ['en', 'pl', 'sv', 'nb'].contains(locale.languageCode);
+  }
 
   @override
   Future<MeteoLocalizations> load(Locale locale) {

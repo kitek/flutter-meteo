@@ -10,6 +10,18 @@ abstract class WeathersEvent extends Equatable {
 
 class LoadWeathers extends WeathersEvent {}
 
+class UpdateWeathers extends WeathersEvent {
+  final List<Weather> weathers;
+
+  const UpdateWeathers(this.weathers);
+
+  @override
+  List<Object> get props => [weathers];
+
+  @override
+  String toString() => 'UpdateWeathers { $weathers }';
+}
+
 class DeleteWeather extends WeathersEvent {
   final Weather model;
 

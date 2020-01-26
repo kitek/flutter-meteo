@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:meteo/model/country.dart';
@@ -11,6 +12,8 @@ class WeatherRepository {
   final WeatherDao _dao;
   final WeatherApiClient _apiClient;
   final BehaviorSubject<List<Weather>> _weathers;
+
+  List<Country> _countriesCache = [];
 
   WeatherRepository(this._dao, this._apiClient)
       : assert(_dao != null),
@@ -38,6 +41,7 @@ class WeatherRepository {
     }
 
     await _dao.save(model);
+
     if (_weathers.hasValue) {
       final currentItems = _weathers.value;
       currentItems.add(model);
@@ -66,5 +70,30 @@ class WeatherRepository {
 
   Future<String> getComment(DateTime dateTime) {
     return _apiClient.getWeatherComment(dateTime);
+  }
+
+  Future<List<Country>> listCountries() async {
+    if (_countriesCache.isEmpty) {
+      _countriesCache = await _apiClient.listCountries();
+    }
+
+    return _countriesCache
+        .where((Country country) => country.isVisible)
+        .toList();
+  }
+
+  Country getSuggestedCountry(Locale locale, List<Country> countries) {
+    final supportedLanguageCodes = {
+      'pl': 'pl',
+      'sv': 'sv',
+      'nb': 'no',
+      'en': 'pl'
+    };
+    final languageCode = supportedLanguageCodes[locale.languageCode] ?? 'pl';
+
+    return countries.firstWhere(
+      (Country country) => country.source == languageCode,
+      orElse: () => countries.first,
+    );
   }
 }

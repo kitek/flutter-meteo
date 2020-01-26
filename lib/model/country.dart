@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-class Country {
+class Country extends Equatable {
   final String id;
   final String name;
   final bool isVisible;
@@ -31,4 +32,7 @@ class Country {
 
   @override
   String toString() => 'Country { id: $id, name: $name }';
+
+  @override
+  List<Object> get props => [id, name, isVisible, source, iconUrl];
 }

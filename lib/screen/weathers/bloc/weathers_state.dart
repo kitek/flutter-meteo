@@ -14,14 +14,12 @@ abstract class WeathersState extends Equatable {
 
 class WeathersLoading extends WeathersState {}
 
-class WeathersNotLoaded extends WeathersState {}
+class WeathersEmpty extends WeathersState {}
 
 class WeathersLoaded extends WeathersState {
   final List<Weather> weathers;
 
   const WeathersLoaded(this.weathers);
-
-  bool get isEmpty => weathers.isEmpty;
 
   @override
   List<Object> get props => [weathers];

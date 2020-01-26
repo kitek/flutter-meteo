@@ -45,6 +45,10 @@ class WeatherApiClient {
     if (response.statusCode != 200) {
       throw Exception('Error fetching cities for: $query');
     }
+    if (response.body == 'null') {
+      return [];
+    }
+
     final Map<String, dynamic> jsonMap = jsonDecode(response.body);
     final cities =
         jsonMap.values.map((json) => Weather.fromJson(json)).toList();

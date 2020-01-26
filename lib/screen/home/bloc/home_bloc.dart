@@ -19,7 +19,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
     if (event is LoadHome) {
-      yield* _mapLoadToState();
+      _mapLoadToState();
     } else if (event is UpdateHome) {
       yield* _mapUpdateToState(event);
     } else if (event is RefreshHome) {
@@ -27,24 +27,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  Stream<HomeState> _mapLoadToState() async* {
-    _observeSaveWeathers();
+  _mapLoadToState() {
+    _observeSaveWeathers(false);
   }
 
-  void _observeSaveWeathers() {
+  void _observeSaveWeathers(bool isRefresh) {
     _weathersSubscription?.cancel();
     _weathersSubscription = _repository.savedWeathers.listen((items) {
-      add(UpdateHome(items));
+      add(UpdateHome(items, isRefresh));
     });
   }
 
   Stream<HomeState> _mapUpdateToState(UpdateHome event) async* {
-    yield HomeLoaded(event.weathers);
+    yield HomeLoaded(event.weathers, event.isRefresh);
   }
 
   Stream<HomeState> _mapRefreshToState(RefreshHome event) async* {
     yield HomeLoading();
-    _observeSaveWeathers();
+    _observeSaveWeathers(true);
   }
 
   @override

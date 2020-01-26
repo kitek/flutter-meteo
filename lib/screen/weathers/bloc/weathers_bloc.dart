@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:meteo/model/weather.dart';
 import 'package:meteo/repository/weather_repository.dart';
@@ -6,6 +8,7 @@ import 'package:meteo/screen/weathers/bloc/weathers_state.dart';
 
 class WeathersBloc extends Bloc<WeathersEvent, WeathersState> {
   final WeatherRepository _repository;
+  StreamSubscription<List<Weather>> _weathersSubscription;
 
   WeathersBloc(this._repository);
 
@@ -15,7 +18,9 @@ class WeathersBloc extends Bloc<WeathersEvent, WeathersState> {
   @override
   Stream<WeathersState> mapEventToState(WeathersEvent event) async* {
     if (event is LoadWeathers) {
-      yield* _mapLoadWeathersToState();
+      _mapLoadWeathersToState();
+    } else if (event is UpdateWeathers) {
+      yield* _mapUpdateWeathersToState(event);
     } else if (event is DeleteWeather) {
       yield* _mapDeleteWeatherToState(event.model);
     } else if (event is AddWeather) {
@@ -23,26 +28,36 @@ class WeathersBloc extends Bloc<WeathersEvent, WeathersState> {
     }
   }
 
-  Stream<WeathersState> _mapLoadWeathersToState() async* {
-    try {
-      final savedWeathers = await _repository.listSavedWeathers();
-      yield WeathersLoaded(savedWeathers);
-    } catch (_) {
-      yield WeathersNotLoaded();
-    }
+  void _mapLoadWeathersToState() {
+    _weathersSubscription?.cancel();
+    _weathersSubscription = _repository.savedWeathers.listen((items) {
+      add(UpdateWeathers(items));
+    });
   }
 
   Stream<WeathersState> _mapDeleteWeatherToState(Weather model) async* {
     if (state is WeathersLoaded) {
       await _repository.remove(model);
-      yield* _mapLoadWeathersToState();
     }
   }
 
   Stream<WeathersState> _mapAddWeatherToState(Weather model) async* {
     if (state is WeathersLoaded) {
       await _repository.save(model);
-      yield* _mapLoadWeathersToState();
+    }
+  }
+
+  @override
+  Future<void> close() {
+    _weathersSubscription?.cancel();
+    return super.close();
+  }
+
+  Stream<WeathersState> _mapUpdateWeathersToState(UpdateWeathers event) async* {
+    if (event.weathers.isEmpty) {
+      yield WeathersEmpty();
+    } else {
+      yield WeathersLoaded(event.weathers);
     }
   }
 }

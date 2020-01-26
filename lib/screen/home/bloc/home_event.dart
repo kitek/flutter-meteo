@@ -14,9 +14,10 @@ class RefreshHome extends HomeEvent {}
 
 class UpdateHome extends HomeEvent {
   final List<Weather> weathers;
+  final bool isRefresh;
 
-  const UpdateHome(this.weathers);
+  const UpdateHome(this.weathers, this.isRefresh);
 
   @override
-  List<Object> get props => [weathers];
+  List<Object> get props => [weathers, isRefresh];
 }

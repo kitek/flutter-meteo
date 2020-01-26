@@ -20,6 +20,8 @@ class App extends StatelessWidget {
       supportedLocales: [
         const Locale('en', ''),
         const Locale('pl', ''),
+        const Locale('sv', ''),
+        const Locale('nb', ''),
       ],
       debugShowCheckedModeBanner: false,
       title: 'Meteo',

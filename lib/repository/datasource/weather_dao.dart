@@ -13,8 +13,8 @@ class WeatherDao {
         `latitude` REAL NOT NULL, 
         `longitude` REAL NOT NULL, 
         `position` INTEGER NOT NULL, 
-        `umUrl` TEXT NOT NULL, 
-        `coampsUrl` TEXT NOT NULL, 
+        `um` TEXT NOT NULL, 
+        `coamps` TEXT NOT NULL, 
         PRIMARY KEY(`id`)
         )''';
 

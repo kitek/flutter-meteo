@@ -21,12 +21,14 @@ class WeathersScreen extends StatelessWidget {
         appBar: AppBar(title: Text(MeteoLocalizations.of(context).myCities)),
         body: BlocBuilder<WeathersBloc, WeathersState>(
           builder: (context, state) {
+            print('state: $state');
+
             if (state is WeathersLoading) {
               return WeathersProgress();
+            } else if (state is WeathersEmpty) {
+              return WeathersListEmpty();
             } else if (state is WeathersLoaded) {
-              return state.isEmpty
-                  ? WeathersListEmpty()
-                  : WeathersList(weathers: state.weathers);
+              return WeathersList(weathers: state.weathers);
             }
 
             return Text('State not supported');
