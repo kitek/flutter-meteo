@@ -6,6 +6,7 @@ import 'package:meteo/model/weather.dart';
 import 'package:meteo/repository/weather_repository.dart';
 import 'package:meteo/screen/find/bloc/find_event.dart';
 import 'package:meteo/screen/find/bloc/find_state.dart';
+import 'package:rxdart/rxdart.dart';
 
 class FindBloc extends Bloc<FindEvent, FindState> {
   final WeatherRepository _repository;
@@ -19,6 +20,22 @@ class FindBloc extends Bloc<FindEvent, FindState> {
 
   @override
   FindState get initialState => FindComplete();
+
+  @override
+  Stream<FindState> transformEvents(
+    Stream<FindEvent> events,
+    Stream<FindState> Function(FindEvent) next,
+  ) {
+    final nonDebounceStream = events.where((event) => event is! UpdateQuery);
+    final debounceStream = events
+        .where((event) => event is UpdateQuery)
+        .debounce((_) => TimerStream(true, Duration(milliseconds: 500)));
+
+    return super.transformEvents(
+      nonDebounceStream.mergeWith([debounceStream]),
+      next,
+    );
+  }
 
   @override
   Stream<FindState> mapEventToState(FindEvent event) async* {

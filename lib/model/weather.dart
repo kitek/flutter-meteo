@@ -53,7 +53,7 @@ class Weather extends Equatable {
 
   @override
   String toString() =>
-      'Weather { id: $id, name: $city, position: $position, graphs: $graphs }';
+      'Weather { id: $id, name: $city, position: $position }';
 
   @override
   List<Object> get props => [id, city, graphs, position];
