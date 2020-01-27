@@ -7,19 +7,21 @@ import 'package:meteo/screen/comment/bloc/comment_state.dart';
 class CommentBloc extends Bloc<CommentEvent, CommentState> {
   final WeatherRepository repository;
   final DateTime firstDate = DateTime(2018);
+  final _now = DateTime.now();
 
   CommentBloc({@required this.repository});
 
   @override
   CommentState get initialState => CommentLoading();
 
-  DateTime get dateTime {
-    final now = DateTime.now();
+  DateTime get selectedDate {
     if (state is CommentLoaded) {
-      return (state as CommentLoaded)?.dateTime ?? now;
+      return (state as CommentLoaded)?.dateTime ?? _now;
     }
-    return now;
+    return _now;
   }
+
+  DateTime get lastDate => _now;
 
   @override
   Stream<CommentState> mapEventToState(CommentEvent event) async* {
@@ -33,7 +35,11 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
 
     try {
       final commentBody = await repository.getComment(event.dateTime);
-      yield CommentLoaded(body: commentBody, dateTime: event.dateTime);
+      if (commentBody.isEmpty) {
+        yield CommentUnavailable();
+      } else {
+        yield CommentLoaded(body: commentBody, dateTime: event.dateTime);
+      }
     } catch (_) {
       yield CommentNotLoaded();
     }

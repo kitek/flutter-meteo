@@ -8,9 +8,17 @@ abstract class CommentState extends Equatable {
   List<Object> get props => [];
 }
 
-class CommentLoading extends CommentState {}
+class CommentLoading extends CommentState {
+  const CommentLoading();
+}
 
-class CommentNotLoaded extends CommentState {}
+class CommentNotLoaded extends CommentState {
+  const CommentNotLoaded();
+}
+
+class CommentUnavailable extends CommentState {
+  const CommentUnavailable();
+}
 
 class CommentLoaded extends CommentState {
   final String body;
@@ -22,4 +30,7 @@ class CommentLoaded extends CommentState {
 
   @override
   List<Object> get props => [body, dateTime];
+
+  @override
+  String toString() => 'CommentLoaded { $body }';
 }

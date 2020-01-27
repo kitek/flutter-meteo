@@ -23,6 +23,7 @@ class MeteoLocalizations {
       'refreshed': 'Refreshed',
       'enter_city_name': 'Type city name',
       'city_not_found': 'City not found. Please type another name.',
+      'comment_unavailable': 'Comment unavailable.\nTry again later.',
     },
     'pl': {
       'app_name': 'Meteo',
@@ -36,6 +37,7 @@ class MeteoLocalizations {
       'refreshed': 'Zaktualizowano',
       'enter_city_name': 'Podaj nazwę miasta',
       'city_not_found': 'Miasto nieznalezione. Wpisz inną nazwę.',
+      'comment_unavailable': 'Komentarz niedostępny.\nSpróbuj później.',
     },
     'sv': {
       'app_name': 'Meteo',
@@ -49,6 +51,8 @@ class MeteoLocalizations {
       'refreshed': 'Uppdateras',
       'enter_city_name': 'Ange stadens namn',
       'city_not_found': 'Staden hittades inte. Skriv ett annat namn.',
+      'comment_unavailable':
+          'Kommentaren är inte tillgänglig.\nFörsök igen senare.',
     },
     'nb': {
       'app_name': 'Meteo',
@@ -62,6 +66,8 @@ class MeteoLocalizations {
       'refreshed': 'Oppdateres',
       'enter_city_name': 'Oppgi bynavn',
       'city_not_found': 'By ikke funnet. Skriv inn et annet navn.',
+      'comment_unavailable':
+          'Kommentaren er ikke tilgjengelig.\nPrøv igjen senere.',
     },
   };
 
@@ -90,6 +96,9 @@ class MeteoLocalizations {
 
   String get cityNotFound =>
       _localizedValues[locale.languageCode]['city_not_found'];
+
+  String get commentUnavailable =>
+      _localizedValues[locale.languageCode]['comment_unavailable'];
 }
 
 class MeteoLocalizationsDelegate

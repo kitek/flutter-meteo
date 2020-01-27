@@ -22,6 +22,14 @@ class CommentScreen extends StatelessWidget {
           builder: (BuildContext context, CommentState state) {
             if (state is CommentLoading) {
               return const Align(child: CircularProgressIndicator());
+            } else if (state is CommentUnavailable) {
+              return Align(
+                child: Text(
+                  MeteoLocalizations.of(context).commentUnavailable,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18.0),
+                ),
+              );
             } else if (state is CommentLoaded) {
               return SingleChildScrollView(
                 child: Padding(
@@ -51,8 +59,8 @@ class CommentScreen extends StatelessWidget {
             final DateTime dateTime = await showDatePicker(
               context: context,
               firstDate: BlocProvider.of<CommentBloc>(context).firstDate,
-              lastDate: DateTime.now(),
-              initialDate: BlocProvider.of<CommentBloc>(context).dateTime,
+              lastDate: BlocProvider.of<CommentBloc>(context).lastDate,
+              initialDate: BlocProvider.of<CommentBloc>(context).selectedDate,
             );
             if (null == dateTime) return;
 
