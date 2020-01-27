@@ -24,8 +24,20 @@ class FindScreen extends StatelessWidget {
         condition: (_, current) =>
             current is FindComplete && current.queryState is QuerySelected,
         child: Scaffold(
-          appBar:
-              AppBar(title: Text(MeteoLocalizations.of(context).chooseCity)),
+          appBar: AppBar(
+            title: Text(
+              MeteoLocalizations.of(context).chooseCity,
+            ),
+            actions: [
+              Builder(
+                builder: (BuildContext context) => IconButton(
+                  icon: const Icon(Icons.gps_fixed),
+                  onPressed: () =>
+                      BlocProvider.of<FindBloc>(context).add(FindMe()),
+                ),
+              ),
+            ],
+          ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(

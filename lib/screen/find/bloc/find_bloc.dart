@@ -1,6 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:meta/meta.dart';
+import 'package:meteo/common/geohash/point.dart';
+import 'package:meteo/common/geohash/util.dart';
 import 'package:meteo/model/country.dart';
 import 'package:meteo/model/weather.dart';
 import 'package:meteo/repository/weather_repository.dart';
@@ -49,6 +53,8 @@ class FindBloc extends Bloc<FindEvent, FindState> {
       yield* _mapUpdateResultsToState(event);
     } else if (event is SelectWeather) {
       yield* _mapSelectWeatherToState(event);
+    } else if (event is FindMe) {
+      yield* _mapFindMeToState(event);
     }
   }
 
@@ -110,5 +116,46 @@ class FindBloc extends Bloc<FindEvent, FindState> {
   Future<void> close() {
     _findOperation?.cancel();
     return super.close();
+  }
+
+  Stream<FindState> _mapFindMeToState(FindMe event) async* {
+
+    final result = await Geolocator().getLastKnownPosition(
+      desiredAccuracy: LocationAccuracy.lowest,
+    );
+    print('result: $result');
+
+    final center = GeoFirePoint(result.latitude, result.longitude);
+    final double radiusInKm = 1;
+
+
+    within(center: center, radius: radiusInKm, field: '');
+  }
+
+  Future<List<Weather>> within({
+    @required GeoFirePoint center,
+    @required double radius,
+    @required String field,
+    bool strictMode = false,
+  }) {
+    int precision = Util.setPrecision(radius);
+    String centerHash = center.hash.substring(0, precision);
+    List<String> area = GeoFirePoint.neighborsOf(hash: centerHash)
+      ..add(centerHash);
+
+    print('centerHash: $centerHash');
+    print('area: $area');
+
+    area.map((hash) => [hash]).toList();
+
+    //    var queries = area.map((hash) {
+//      Query tempQuery = _queryPoint(hash, field);
+//      return _createStream(tempQuery).map((QuerySnapshot querySnapshot) {
+//        return querySnapshot.documents;
+//      });
+//    });
+
+
+    return null;
   }
 }
