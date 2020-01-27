@@ -22,7 +22,8 @@ class FindScreen extends StatelessWidget {
       child: BlocListener<FindBloc, FindState>(
         listener: (context, _) => Navigator.of(context).pop(),
         condition: (_, current) =>
-            current is FindComplete && current.queryState is QuerySelected,
+            current is FindComplete &&
+            current.suggestionsState is SuggestionSelected,
         child: Scaffold(
           appBar: AppBar(
             title: Text(

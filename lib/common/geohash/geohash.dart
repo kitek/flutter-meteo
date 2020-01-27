@@ -1,19 +1,26 @@
 import 'dart:math';
 
-import 'package:meteo/common/geohash/point.dart';
+import 'package:meteo/model/location.dart';
 
-
-class Util {
+///
+/// Thanks for https://pub.dev/packages/geoflutterfire
+class Geohash {
   static const BASE32_CODES = '0123456789bcdefghjkmnpqrstuvwxyz';
   Map<String, int> base32CodesDic = new Map();
 
-  Util() {
+  Geohash() {
     for (var i = 0; i < BASE32_CODES.length; i++) {
       base32CodesDic.putIfAbsent(BASE32_CODES[i], () => i);
     }
   }
 
   var encodeAuto = 'auto';
+
+  // The equatorial radius of the earth in meters
+  static const double EARTH_EQ_RADIUS = 6378137;
+
+  // The meridional radius of the earth in meters
+  static const double EARTH_POLAR_RADIUS = 6357852.3;
 
   ///
   /// Significant Figure Hash Length
@@ -82,6 +89,40 @@ class Util {
     return chars.join('');
   }
 
+  static int setPrecision(double km) {
+    /*
+      * 1	≤ 5,000km	×	5,000km
+      * 2	≤ 1,250km	×	625km
+      * 3	≤ 156km	×	156km
+      * 4	≤ 39.1km	×	19.5km
+      * 5	≤ 4.89km	×	4.89km
+      * 6	≤ 1.22km	×	0.61km
+      * 7	≤ 153m	×	153m
+      * 8	≤ 38.2m	×	19.1m
+      * 9	≤ 4.77m	×	4.77m
+      *
+     */
+
+    if (km <= 0.00477)
+      return 9;
+    else if (km <= 0.0382)
+      return 8;
+    else if (km <= 0.153)
+      return 7;
+    else if (km <= 1.22)
+      return 6;
+    else if (km <= 4.89)
+      return 5;
+    else if (km <= 39.1)
+      return 4;
+    else if (km <= 156)
+      return 3;
+    else if (km <= 1250)
+      return 2;
+    else
+      return 1;
+  }
+
   ///
   /// Decode Bounding box
   ///
@@ -137,24 +178,6 @@ class Util {
   }
 
   ///
-  /// Neighbor
-  ///
-  /// Find neighbor of a geohash string in certain direction.
-  /// Direction is a two-element array, i.e. [1,0] means north, [-1,-1] means southwest.
-  ///
-  /// direction [lat, lon], i.e.
-  /// [1,0] - north
-  /// [1,1] - northeast
-  String neighbor(String hashString, var direction) {
-    var lonLat = decode(hashString);
-    var neighborLat =
-        lonLat['latitude'] + direction[0] * lonLat['latitudeError'] * 2;
-    var neighborLon =
-        lonLat['longitude'] + direction[1] * lonLat['longitudeError'] * 2;
-    return encode(neighborLat, neighborLon, hashString.length);
-  }
-
-  ///
   /// Neighbors
   /// Returns all neighbors' hashstrings clockwise from north around to northwest
   /// 7 0 1
@@ -190,69 +213,13 @@ class Util {
     return neighborHashList;
   }
 
-  static int setPrecision(double km) {
-    /*
-      * 1	≤ 5,000km	×	5,000km
-      * 2	≤ 1,250km	×	625km
-      * 3	≤ 156km	×	156km
-      * 4	≤ 39.1km	×	19.5km
-      * 5	≤ 4.89km	×	4.89km
-      * 6	≤ 1.22km	×	0.61km
-      * 7	≤ 153m	×	153m
-      * 8	≤ 38.2m	×	19.1m
-      * 9	≤ 4.77m	×	4.77m
-      *
-     */
-
-    if (km <= 0.00477)
-      return 9;
-    else if (km <= 0.0382)
-      return 8;
-    else if (km <= 0.153)
-      return 7;
-    else if (km <= 1.22)
-      return 6;
-    else if (km <= 4.89)
-      return 5;
-    else if (km <= 39.1)
-      return 4;
-    else if (km <= 156)
-      return 3;
-    else if (km <= 1250)
-      return 2;
-    else
-      return 1;
-  }
-
-  static const double MAX_SUPPORTED_RADIUS = 8587;
-
-  // Length of a degree latitude at the equator
-  static const double METERS_PER_DEGREE_LATITUDE = 110574;
-
-  // The equatorial circumference of the earth in meters
-  static const double EARTH_MERIDIONAL_CIRCUMFERENCE = 40007860;
-
-  // The equatorial radius of the earth in meters
-  static const double EARTH_EQ_RADIUS = 6378137;
-
-  // The meridional radius of the earth in meters
-  static const double EARTH_POLAR_RADIUS = 6357852.3;
-
-  /* The following value assumes a polar radius of
-     * r_p = 6356752.3
-     * and an equatorial radius of
-     * r_e = 6378137
-     * The value is calculated as e2 == (r_e^2 - r_p^2)/(r_e^2)
-     * Use exact value to avoid rounding errors
-     */
-  static const double EARTH_E2 = 0.00669447819799;
-
-  // Cutoff for floating point calculations
-  static const double EPSILON = 1e-12;
-
-  static double distance(Coordinates location1, Coordinates location2) {
-    return calcDistance(location1.latitude, location1.longitude,
-        location2.latitude, location2.longitude);
+  static double distance(Location location1, Location location2) {
+    return calcDistance(
+      location1.latitude,
+      location1.longitude,
+      location2.latitude,
+      location2.longitude,
+    );
   }
 
   static double calcDistance(

@@ -9,6 +9,36 @@ abstract class FindState extends Equatable {
   List<Object> get props => [];
 }
 
+class FindComplete extends FindState {
+  final CountriesState countriesState;
+  final SuggestionsState suggestionsState;
+  final String query;
+
+  const FindComplete({
+    this.countriesState = const CountriesLoading(),
+    this.suggestionsState = const SuggestionsLoaded(),
+    this.query = '',
+  });
+
+  FindComplete copyWith({
+    CountriesState countriesState,
+    SuggestionsState suggestionsState,
+    String query,
+  }) {
+    return FindComplete(
+      countriesState: countriesState ?? this.countriesState,
+      suggestionsState: suggestionsState ?? this.suggestionsState,
+      query: query ?? this.query,
+    );
+  }
+
+  @override
+  List<Object> get props => [countriesState, suggestionsState, query];
+
+  @override
+  String toString() => 'FindComplete { $suggestionsState }';
+}
+
 abstract class CountriesState extends Equatable {
   const CountriesState();
 
@@ -30,22 +60,22 @@ class CountriesLoaded extends CountriesState {
   List<Object> get props => [countries, selectedCountry];
 }
 
-abstract class QueryState extends Equatable {
-  const QueryState();
+abstract class SuggestionsState extends Equatable {
+  const SuggestionsState();
 
   @override
   List<Object> get props => [];
 }
 
-class QueryLoading extends QueryState {
-  const QueryLoading();
+class SuggestionsLoading extends SuggestionsState {
+  const SuggestionsLoading();
 }
 
-class QueryLoaded extends QueryState {
+class SuggestionsLoaded extends SuggestionsState {
   final List<Weather> suggestedWeathers;
   final String query;
 
-  const QueryLoaded({
+  const SuggestionsLoaded({
     this.suggestedWeathers = const [],
     this.query = '',
   });
@@ -54,23 +84,15 @@ class QueryLoaded extends QueryState {
 
   @override
   List<Object> get props => [suggestedWeathers, query];
-}
-
-class QuerySelected extends QueryState {
-  const QuerySelected();
-}
-
-class FindComplete extends FindState {
-  final CountriesState countriesState;
-  final QueryState queryState;
-  final String query;
-
-  const FindComplete({
-    this.countriesState = const CountriesLoading(),
-    this.queryState = const QueryLoaded(),
-    this.query = '',
-  });
 
   @override
-  List<Object> get props => [countriesState, queryState, query];
+  String toString() => 'SuggestionsLoaded { $suggestedWeathers }';
+}
+
+class SuggestionsLoadingError extends SuggestionsState {
+  const SuggestionsLoadingError();
+}
+
+class SuggestionSelected extends SuggestionsState {
+  const SuggestionSelected();
 }

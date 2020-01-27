@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:meta/meta.dart';
-import 'package:meteo/common/geohash/point.dart';
-import 'package:meteo/common/geohash/util.dart';
 import 'package:meteo/model/country.dart';
+import 'package:meteo/model/location.dart';
 import 'package:meteo/model/weather.dart';
 import 'package:meteo/repository/weather_repository.dart';
 import 'package:meteo/screen/find/bloc/find_event.dart';
@@ -71,6 +69,7 @@ class FindBloc extends Bloc<FindEvent, FindState> {
   Stream<FindState> _mapSelectCountryToState(SelectCountry event) async* {
     _findOperation?.cancel();
     _selectedCountry = event.country;
+
     yield FindComplete(
       countriesState: CountriesLoaded(_availableCountries, _selectedCountry),
     );
@@ -81,13 +80,13 @@ class FindBloc extends Bloc<FindEvent, FindState> {
 
     yield FindComplete(
       countriesState: CountriesLoaded(_availableCountries, _selectedCountry),
-      queryState: QueryLoading(),
+      suggestionsState: SuggestionsLoading(),
       query: _query,
     );
 
     _findOperation?.cancel();
     _findOperation = _repository
-        .findWeather(_query, _selectedCountry)
+        .findWeatherByName(_query, _selectedCountry)
         .asStream()
         .listen((results) => add(UpdateResults(results, _query)));
   }
@@ -95,8 +94,10 @@ class FindBloc extends Bloc<FindEvent, FindState> {
   Stream<FindState> _mapUpdateResultsToState(UpdateResults event) async* {
     yield FindComplete(
       countriesState: CountriesLoaded(_availableCountries, _selectedCountry),
-      queryState:
-          QueryLoaded(suggestedWeathers: event.results, query: event.query),
+      suggestionsState: SuggestionsLoaded(
+        suggestedWeathers: event.results,
+        query: event.query,
+      ),
       query: event.query,
     );
   }
@@ -107,7 +108,7 @@ class FindBloc extends Bloc<FindEvent, FindState> {
 
     yield FindComplete(
       countriesState: CountriesLoaded(_availableCountries, _selectedCountry),
-      queryState: QuerySelected(),
+      suggestionsState: SuggestionSelected(),
       query: _query,
     );
   }
@@ -119,43 +120,27 @@ class FindBloc extends Bloc<FindEvent, FindState> {
   }
 
   Stream<FindState> _mapFindMeToState(FindMe event) async* {
+    if (state is! FindComplete) return;
+    final currentState = state as FindComplete;
+    yield currentState.copyWith(suggestionsState: SuggestionsLoading());
 
-    final result = await Geolocator().getLastKnownPosition(
-      desiredAccuracy: LocationAccuracy.lowest,
-    );
-    print('result: $result');
+    try {
+      final result = await Geolocator().getLastKnownPosition(
+        desiredAccuracy: LocationAccuracy.lowest,
+      );
+      final center = Location(
+        latitude: result.latitude,
+        longitude: result.longitude,
+      );
+      final weathers =
+          await _repository.findWeatherByLocation(location: center);
 
-    final center = GeoFirePoint(result.latitude, result.longitude);
-    final double radiusInKm = 1;
-
-
-    within(center: center, radius: radiusInKm, field: '');
-  }
-
-  Future<List<Weather>> within({
-    @required GeoFirePoint center,
-    @required double radius,
-    @required String field,
-    bool strictMode = false,
-  }) {
-    int precision = Util.setPrecision(radius);
-    String centerHash = center.hash.substring(0, precision);
-    List<String> area = GeoFirePoint.neighborsOf(hash: centerHash)
-      ..add(centerHash);
-
-    print('centerHash: $centerHash');
-    print('area: $area');
-
-    area.map((hash) => [hash]).toList();
-
-    //    var queries = area.map((hash) {
-//      Query tempQuery = _queryPoint(hash, field);
-//      return _createStream(tempQuery).map((QuerySnapshot querySnapshot) {
-//        return querySnapshot.documents;
-//      });
-//    });
-
-
-    return null;
+      yield currentState.copyWith(
+        suggestionsState: SuggestionsLoaded(suggestedWeathers: weathers),
+        query: '',
+      );
+    } catch (e) {
+      yield currentState.copyWith(suggestionsState: SuggestionsLoadingError());
+    }
   }
 }
