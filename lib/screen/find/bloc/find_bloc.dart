@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:meteo/model/country.dart';
+import 'package:meteo/model/location.dart';
 import 'package:meteo/model/weather.dart';
 import 'package:meteo/repository/weather_repository.dart';
 import 'package:meteo/screen/find/bloc/find_event.dart';
@@ -49,6 +51,8 @@ class FindBloc extends Bloc<FindEvent, FindState> {
       yield* _mapUpdateResultsToState(event);
     } else if (event is SelectWeather) {
       yield* _mapSelectWeatherToState(event);
+    } else if (event is FindMe) {
+      yield* _mapFindMeToState(event);
     }
   }
 
@@ -65,6 +69,7 @@ class FindBloc extends Bloc<FindEvent, FindState> {
   Stream<FindState> _mapSelectCountryToState(SelectCountry event) async* {
     _findOperation?.cancel();
     _selectedCountry = event.country;
+
     yield FindComplete(
       countriesState: CountriesLoaded(_availableCountries, _selectedCountry),
     );
@@ -75,13 +80,13 @@ class FindBloc extends Bloc<FindEvent, FindState> {
 
     yield FindComplete(
       countriesState: CountriesLoaded(_availableCountries, _selectedCountry),
-      queryState: QueryLoading(),
+      suggestionsState: SuggestionsLoading(),
       query: _query,
     );
 
     _findOperation?.cancel();
     _findOperation = _repository
-        .findWeather(_query, _selectedCountry)
+        .findWeatherByName(_query, _selectedCountry)
         .asStream()
         .listen((results) => add(UpdateResults(results, _query)));
   }
@@ -89,8 +94,10 @@ class FindBloc extends Bloc<FindEvent, FindState> {
   Stream<FindState> _mapUpdateResultsToState(UpdateResults event) async* {
     yield FindComplete(
       countriesState: CountriesLoaded(_availableCountries, _selectedCountry),
-      queryState:
-          QueryLoaded(suggestedWeathers: event.results, query: event.query),
+      suggestionsState: SuggestionsLoaded(
+        suggestedWeathers: event.results,
+        query: event.query,
+      ),
       query: event.query,
     );
   }
@@ -101,7 +108,7 @@ class FindBloc extends Bloc<FindEvent, FindState> {
 
     yield FindComplete(
       countriesState: CountriesLoaded(_availableCountries, _selectedCountry),
-      queryState: QuerySelected(),
+      suggestionsState: SuggestionSelected(),
       query: _query,
     );
   }
@@ -110,5 +117,30 @@ class FindBloc extends Bloc<FindEvent, FindState> {
   Future<void> close() {
     _findOperation?.cancel();
     return super.close();
+  }
+
+  Stream<FindState> _mapFindMeToState(FindMe event) async* {
+    if (state is! FindComplete) return;
+    final currentState = state as FindComplete;
+    yield currentState.copyWith(suggestionsState: SuggestionsLoading());
+
+    try {
+      final result = await Geolocator().getLastKnownPosition(
+        desiredAccuracy: LocationAccuracy.lowest,
+      );
+      final center = Location(
+        latitude: result.latitude,
+        longitude: result.longitude,
+      );
+      final weathers =
+          await _repository.findWeatherByLocation(location: center);
+
+      yield currentState.copyWith(
+        suggestionsState: SuggestionsLoaded(suggestedWeathers: weathers),
+        query: '',
+      );
+    } catch (e) {
+      yield currentState.copyWith(suggestionsState: SuggestionsLoadingError());
+    }
   }
 }

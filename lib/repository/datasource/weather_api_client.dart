@@ -24,16 +24,53 @@ class WeatherApiClient {
     return jsonMap.values.map((json) => Country.fromJson(json)).toList();
   }
 
-  Future<List<Weather>> findWeather(String query, String countrySource) async {
-    final queryStart = removeDiacritics(query.toLowerCase().trim());
-    if (queryStart.isEmpty) return [];
-
+  Future<List<Weather>> findWeatherByGeohash({
+    @required String geohash,
+    @required String countrySource,
+    int limit = 50,
+  }) {
+    final queryStart = geohash;
     final queryEnd = '$queryStart\~';
+
+    return _findWeather(
+      countrySource: countrySource,
+      orderBy: 'geohash',
+      startAt: queryStart,
+      endAt: queryEnd,
+      limit: limit,
+    );
+  }
+
+  Future<List<Weather>> findWeatherByName({
+    @required String queryName,
+    @required String countrySource,
+    int limit = 10,
+  }) {
+    final queryStart = removeDiacritics(queryName.toLowerCase().trim());
+    if (queryStart.isEmpty) return Future.value([]);
+    final queryEnd = '$queryStart\~';
+
+    return _findWeather(
+      countrySource: countrySource,
+      orderBy: 'searchName',
+      startAt: queryStart,
+      endAt: queryEnd,
+      limit: limit,
+    );
+  }
+
+  Future<List<Weather>> _findWeather({
+    @required String countrySource,
+    @required String orderBy,
+    @required String startAt,
+    @required String endAt,
+    int limit = 10,
+  }) async {
     final queryParams = {
-      'orderBy': '"searchName"',
-      'startAt': '"$queryStart"',
-      'endAt': '"$queryEnd"',
-      'limitToFirst': '10',
+      'orderBy': '"$orderBy"',
+      'startAt': '"$startAt"',
+      'endAt': '"$endAt"',
+      'limitToFirst': '$limit',
     };
     final uri = Uri.https(
       _authority,
@@ -43,7 +80,7 @@ class WeatherApiClient {
 
     final response = await this.httpClient.get(uri);
     if (response.statusCode != 200) {
-      throw Exception('Error fetching cities for: $query');
+      throw Exception('Error fetching cities for: $orderBy');
     }
     if (response.body == 'null') {
       return [];

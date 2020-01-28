@@ -10,10 +10,11 @@ class SearchResultList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<FindBloc, FindState>(
       builder: (context, state) {
-        final QueryState queryState =
-            (state is FindComplete) ? state.queryState : QueryLoaded();
+        final SuggestionsState queryState = (state is FindComplete)
+            ? state.suggestionsState
+            : SuggestionsLoaded();
 
-        if (queryState is QueryLoaded) {
+        if (queryState is SuggestionsLoaded) {
           if (queryState.hasEmptyResults) {
             return Align(
               child: Text(MeteoLocalizations.of(context).cityNotFound),

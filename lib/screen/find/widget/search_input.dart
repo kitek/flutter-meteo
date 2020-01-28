@@ -21,10 +21,11 @@ class SearchInput extends StatelessWidget {
         ),
         BlocBuilder<FindBloc, FindState>(
           builder: (context, state) {
-            final QueryState queryState =
-                state is FindComplete ? state.queryState : QueryLoading();
+            final SuggestionsState queryState = state is FindComplete
+                ? state.suggestionsState
+                : SuggestionsLoading();
 
-            if (queryState is QueryLoading) {
+            if (queryState is SuggestionsLoading) {
               return Positioned(
                 right: 16,
                 top: 19,

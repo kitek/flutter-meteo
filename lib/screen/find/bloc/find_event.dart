@@ -67,3 +67,7 @@ class UpdateResults extends FindEvent {
   @override
   String toString() => 'UpdateResults { results: $results, query: $query}';
 }
+
+class FindMe extends FindEvent {
+  const FindMe();
+}

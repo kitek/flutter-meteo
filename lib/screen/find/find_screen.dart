@@ -22,10 +22,23 @@ class FindScreen extends StatelessWidget {
       child: BlocListener<FindBloc, FindState>(
         listener: (context, _) => Navigator.of(context).pop(),
         condition: (_, current) =>
-            current is FindComplete && current.queryState is QuerySelected,
+            current is FindComplete &&
+            current.suggestionsState is SuggestionSelected,
         child: Scaffold(
-          appBar:
-              AppBar(title: Text(MeteoLocalizations.of(context).chooseCity)),
+          appBar: AppBar(
+            title: Text(
+              MeteoLocalizations.of(context).chooseCity,
+            ),
+            actions: [
+              Builder(
+                builder: (BuildContext context) => IconButton(
+                  icon: const Icon(Icons.gps_fixed),
+                  onPressed: () =>
+                      BlocProvider.of<FindBloc>(context).add(FindMe()),
+                ),
+              ),
+            ],
+          ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
