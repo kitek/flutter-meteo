@@ -36,7 +36,7 @@ class FindComplete extends FindState {
   List<Object> get props => [countriesState, suggestionsState, query];
 
   @override
-  String toString() => 'FindComplete { $suggestionsState }';
+  String toString() => 'FindComplete { $countriesState, $suggestionsState }';
 }
 
 abstract class CountriesState extends Equatable {
@@ -58,6 +58,9 @@ class CountriesLoaded extends CountriesState {
 
   @override
   List<Object> get props => [countries, selectedCountry];
+
+  @override
+  String toString() => 'CountriesLoaded { total: ${countries.length} }';
 }
 
 abstract class SuggestionsState extends Equatable {

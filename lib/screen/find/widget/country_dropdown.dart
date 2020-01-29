@@ -26,7 +26,19 @@ class CountryDropdown extends StatelessWidget {
                 : CountriesLoading();
 
             if (countriesState is CountriesLoading) {
-              return SizedBox(height: 48);
+              return Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: SizedBox(
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.0,
+                    ),
+                  ),
+                ),
+              );
             } else if (countriesState is CountriesLoaded) {
               return DropdownButton<Country>(
                 value: countriesState.selectedCountry,
