@@ -25,14 +25,16 @@ class WeatherDao {
     return rows.map((row) => Weather.fromMap(row)).toList();
   }
 
-  Future<void> save(Weather model) async {
+  Future<Weather> save(Weather model) async {
     final db = await DbProvider.db.database;
 
-    return await db.insert(
+    await db.insert(
       _TABLE_NAME,
       model.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    return model;
   }
 
   Future<void> remove(Weather model) async {

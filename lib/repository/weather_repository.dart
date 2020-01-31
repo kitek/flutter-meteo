@@ -38,17 +38,19 @@ class WeatherRepository {
 
   Future<Weather> save(Weather model) async {
     // TODO calculate position
-    await _dao.save(model);
+    final newModel = await _dao.save(model);
 
     if (_weathers.hasValue) {
       final currentItems = _weathers.value;
+      if (currentItems.contains(newModel)) return newModel;
+
       currentItems.add(model);
       _weathers.add(currentItems);
     } else {
       listSavedWeathers();
     }
 
-    return model;
+    return newModel;
   }
 
   Future<List<Weather>> findWeatherByName(String query, Country country) async {
