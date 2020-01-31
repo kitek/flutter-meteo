@@ -15,7 +15,7 @@ class WeatherRepository {
   final WeatherApiClient _apiClient;
   final BehaviorSubject<List<Weather>> _weathers;
   final Geohash _geo = Geohash();
-
+  final Map<String, List<Weather>> _namesCache = Map<String, List<Weather>>();
   List<Country> _countriesCache = [];
 
   WeatherRepository(this._dao, this._apiClient)
@@ -51,11 +51,18 @@ class WeatherRepository {
     return model;
   }
 
-  Future<List<Weather>> findWeatherByName(String query, Country country) {
-    return _apiClient.findWeatherByName(
+  Future<List<Weather>> findWeatherByName(String query, Country country) async {
+    if (_namesCache.containsKey(query)) {
+      return _namesCache[query];
+    }
+
+    final results = await _apiClient.findWeatherByName(
       queryName: query,
       countrySource: country.source,
     );
+    _namesCache[query] = results;
+
+    return results;
   }
 
   Future<List<Weather>> findWeatherByLocation({
