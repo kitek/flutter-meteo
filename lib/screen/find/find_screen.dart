@@ -25,6 +25,8 @@ class FindScreen extends StatelessWidget {
             current is FindComplete &&
             current.suggestionsState is SuggestionSelected,
         child: Scaffold(
+          resizeToAvoidBottomPadding:
+              MediaQuery.of(context).orientation == Orientation.portrait,
           appBar: AppBar(
             title: Text(
               MeteoLocalizations.of(context).chooseCity,
