@@ -24,18 +24,18 @@ class FindBloc extends Bloc<FindEvent, FindState> {
   FindState get initialState => FindComplete();
 
   @override
-  Stream<FindState> transformEvents(
+  Stream<Transition<FindEvent, FindState>> transformEvents(
     Stream<FindEvent> events,
-    Stream<FindState> Function(FindEvent) next,
+    TransitionFunction<FindEvent, FindState> transitionFn,
   ) {
     final nonDebounceStream = events.where((event) => event is! UpdateQuery);
     final debounceStream = events
         .where((event) => event is UpdateQuery)
-        .debounce((_) => TimerStream(true, Duration(milliseconds: 500)));
+        .debounceTime(Duration(milliseconds: 300));
 
     return super.transformEvents(
-      nonDebounceStream.mergeWith([debounceStream]),
-      next,
+      MergeStream([nonDebounceStream, debounceStream]),
+      transitionFn,
     );
   }
 
